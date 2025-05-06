@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - Bookstore{% endblock %}
+
+{% block head %}
+
+<style>
+    /* About Section */
+    .about-section {
+        text-align: center;
+        padding: 70px 20px;
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: medium;
+    }
+
+    .about-section h1 {
+        font-size: 35px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    /* Grid layout for team members */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .col-md-3 {
+        flex: 1 1 43%; /* Reduced the width of the cards */
+        max-width: 43%; /* Control the width of the cards */
+    }
+
+    /* Hover Effects */
+    .owner-card:hover {
+        transform: scale(1.09);
+        background-color: #f8f9fa;
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Owner Cards */
+    .owner-card {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        margin: 10px;
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        min-height: 250px; /* Adjusted height */
+        max-width: 550px; /* Added max width to make the cards smaller */
+        width: 100%; /* Ensure it takes up the available space but doesn't exceed max-width */
+    }
+
+    .owner-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+    /* Why Choose Us Section */
+    section.why-choose-us {
+        padding: 40px 20px;
+    }
+
+    .why-choose-us h2 {
+        text-align: center;
+        font-size: 30px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    .why-choose-us .row {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .feature-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        margin: 7px;
+        flex: 1;  /* This ensures the columns expand equally */
+        min-height: 180px; /* Optional - Set a minimum height */
+        transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; /* Added transition for smooth effect */
+    }
+
+    /* Hover Effects */
+    .feature-card:hover {
+        transform: scale(1.05);
+        background-color: #f8f9fa; /* Light grey */
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-card i {
+        font-size: 35px;
+        margin-bottom: 10px;
+        color: #131416;
+    }
+
+    .feature-card h5 {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .feature-card p {
+        font-size: 1.5rem;
+        margin-top: 10px;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<!-- About Section -->
+<section class="container about-section">
+    <h1 class="mb-3">Meet Our Team!</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-3 owner-card">
+            <img src="https://r2.erweima.ai/imgcompressed/img/compressed_79fab889f5bd413621384b5c4ed84ffc.webp" alt="Owner 1">
+            <h2>Harmanpreet Kaur</h2>
+            <p>BE in Artificial Intelligence, passionate about technology and literature</p>
+        </div>
+        <div class="col-md-3 owner-card">
+            <img src="https://img.freepik.com/premium-photo/3d-girl-cartoon-character_843290-955.jpg" alt="Owner 2">
+            <h2>Ramanjot Kaur</h2>
+            <p>BE in Artificial Intelligence, loves exploring AI applications in reading</p>
+        </div>
+        <div class="col-md-3 owner-card">
+            <img src="https://img.freepik.com/premium-photo/beautiful-girl-pink-dress-pink-background_994418-12925.jpg" alt="Owner 3">
+            <h2>Prabhleen Kaur</h2>
+            <p>BE in Artificial Intelligence, avid reader and dedicated book enthusiast.</p>
+        </div>
+        <div class="col-md-3 owner-card">
+            <img src="https://img.freepik.com/premium-photo/3d-cartoon-rendering-like-beautiful-girl_639785-20294.jpg" alt="Owner 4">
+            <h2>Harmandeep Kaur</h2>
+            <p>BE in Artificial Intelligence, dedicated to making books accessible for all.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="container why-choose-us">
+    <h2 class="mb-3">Why Choose Us?</h2>
+    <div class="row">
+        <div class="col-md-2 feature-card">
+            <i class="fas fa-book"></i>
+            <h5>Massive Collection</h5>
+            <p>Over <strong>50,000+ books</strong> across all genres.</p>
+        </div>
+        <div class="col-md-2 feature-card">
+            <i class="fas fa-tags"></i>
+            <h5>Best Prices</h5>
+            <p>Competitive prices and amazing discounts.</p>
+        </div>
+        <div class="col-md-2 feature-card">
+            <i class="fas fa-truck"></i>
+            <h5>Fast Delivery</h5>
+            <p>Quick & reliable shipping.</p>
+        </div>
+        <div class="col-md-2 feature-card">
+            <i class="fas fa-star"></i>
+            <h5>Customer Support</h5>
+            <p>24/7 dedicated customer service.</p>
+        </div>
+        <div class="col-md-2 feature-card">
+            <i class="fas fa-globe"></i>
+            <h5>Global Reach</h5>
+            <p>Shipping to multiple countries.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

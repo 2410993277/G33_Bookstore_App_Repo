@@ -1,0 +1,177 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Reviews Management</h1>
+
+    <ul class="nav nav-tabs mb-4" id="reviewsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="book-reviews-tab" data-bs-toggle="tab" data-bs-target="#book-reviews" type="button" role="tab" aria-controls="book-reviews" aria-selected="true">
+                <i class="fas fa-book me-2"></i>Book Reviews
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="client-reviews-tab" data-bs-toggle="tab" data-bs-target="#client-reviews" type="button" role="tab" aria-controls="client-reviews" aria-selected="false">
+                <i class="fas fa-users me-2"></i>Client Reviews
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="reviewsTabContent">
+        <!-- Book Reviews Tab -->
+        <div class="tab-pane fade show active" id="book-reviews" role="tabpanel" aria-labelledby="book-reviews-tab">
+            <div class="card shadow">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Book Reviews</h5>
+                    <span class="badge bg-primary">{{ book_reviews|length }} Reviews</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if book_reviews %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Book</th>
+                                    <th>User</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for review in book_reviews %}
+                                <tr>
+                                    <td>{{ review.id }}</td>
+                                    <td>
+                                        <a href="{{ url_for('book_detail', book_id=review.book.id) }}" target="_blank">
+                                            {{ review.book.title }}
+                                        </a>
+                                    </td>
+                                    <td>{{ review.user.name }}</td>
+                                    <td>
+                                        <div class="text-warning">
+                                            {% for i in range(review.rating) %}
+                                            <i class="fas fa-star"></i>
+                                            {% endfor %}
+                                            {% for i in range(5 - review.rating) %}
+                                            <i class="far fa-star"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 250px;">
+                                            {{ review.comment }}
+                                        </div>
+                                    </td>
+                                    <td>{{ review.created_at.strftime('%b %d, %Y') }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('admin_delete_review', review_type='book', review_id=review.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this review?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center">
+                        <p class="text-muted mb-0">No book reviews found.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Reviews Tab -->
+        <div class="tab-pane fade" id="client-reviews" role="tabpanel" aria-labelledby="client-reviews-tab">
+            <div class="card shadow">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Client Reviews</h5>
+                    <span class="badge bg-primary">{{ client_reviews|length }} Reviews</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if client_reviews %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Image</th>
+                                    <th>Rating</th>
+                                    <th>Review</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for review in client_reviews %}
+                                <tr>
+                                    <td>{{ review.id }}</td>
+                                    <td>{{ review.name }}</td>
+                                    <td>
+                                        {% if review.image %}
+                                        <img src="{{ url_for('static', filename=review.image) }}" alt="{{ review.name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                        <span class="badge bg-secondary">No Image</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="text-warning">
+                                            {% for i in range(review.rating) %}
+                                            <i class="fas fa-star"></i>
+                                            {% endfor %}
+                                            {% for i in range(5 - review.rating) %}
+                                            <i class="far fa-star"></i>
+                                            {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 250px;">
+                                            {{ review.review }}
+                                        </div>
+                                    </td>
+                                    <td>{{ review.created_at.strftime('%b %d, %Y') }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('admin_delete_review', review_type='client', review_id=review.id) }}" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this review?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center">
+                        <p class="text-muted mb-0">No client reviews found.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const triggerTabList = document.querySelectorAll('#reviewsTabs button');
+        triggerTabList.forEach(triggerEl => {
+            triggerEl.addEventListener('click', function(event) {
+                event.preventDefault();
+                const tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Sections{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Section Management</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Sections</li>
+    </ol>
+
+    
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-layer-group me-1"></i>
+                Sections
+            </div>
+            <a href="{{ url_for('admin_add_section') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Add New Section
+            </a>
+        </div>
+        <div class="card-body">
+            <table id="sectionsTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Banner</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Books</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for section in sections %}
+                    <tr>
+                        <td>{{ section.id }}</td>
+                        <td>
+                            {% if section.banner %}
+                                <img src="{{ url_for('static', filename=section.banner) }}" alt="{{ section.name }}" width="100" class="img-thumbnail">
+                            {% else %}
+                                <span class="text-muted">No banner</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ section.name }}</td>
+                        <td>{{ section.description|truncate(100) }}</td>
+                        <td>{{ section.books|length }}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('admin_edit_section', section_id=section.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSectionModal{{ section.id }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                            
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteSectionModal{{ section.id }}" tabindex="-1" aria-labelledby="deleteSectionModalLabel{{ section.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteSectionModalLabel{{ section.id }}">Confirm Delete</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete the section <strong>"{{ section.name }}"</strong>?</p>
+                                            {% if section.books|length > 0 %}
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle"></i> This section contains {{ section.books|length }} books. You must move or delete these books before deleting this section.
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form action="{{ url_for('admin_delete_section', section_id=section.id) }}" method="POST">
+                                                <button type="submit" class="btn btn-danger" {% if section.books|length > 0 %}disabled{% endif %}>Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#sectionsTable').DataTable({
+            order: [[2, 'asc']]  // Sort by name by default
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .book-container {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .book-image-section {
+    flex: 1 1 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .book-image-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .book-image {
+    max-width: 100%;
+    max-height: 450px;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    object-fit: contain;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .book-image:hover {
+    transform: scale(1.02);
+  }
+
+  .wishlist-btn-form {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    z-index: 10;
+  }
+
+  .wishlist-btn {
+    background-color: #f87171;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 12px;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .wishlist-btn:hover {
+    background-color: #dc2626;
+    transform: scale(1.1);
+    cursor: pointer;
+    color: #fff;
+  }
+
+  .book-details {
+    flex: 1 1 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .book-details h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1e293b;
+  }
+
+  .book-details p {
+    font-size: 1.3rem;
+    color: #475569;
+    margin-bottom: 12px;
+  }
+
+  .description-text {
+    margin-top: 10px;
+    text-align: justify;
+  }
+
+  .btn-cart, .btn-review {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 1.4rem;
+    border-radius: 50px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-cart {
+    border: 2px solid #22c55e;
+    color: #22c55e;
+    background-color: transparent;
+  }
+
+  .btn-cart:hover {
+    background-color: #22c55e;
+    color: white;
+  }
+
+  .btn-review {
+    border: 2px solid #3b82f6;
+    color: #3b82f6;
+    background-color: transparent;
+    margin-left: 10px;
+  }
+
+  .btn-review:hover {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  .reviews {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .review-box {
+    background: #f8fafc;
+    font-size: medium;
+    padding: 20px 25px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border-left: 5px solid #2563eb;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .review-box:hover {
+    background: #f1f5f9;
+  }
+
+  .divider {
+    margin: 60px auto 30px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d1d5db, transparent);
+    max-width: 80%;
+  }
+
+  @media (max-width: 768px) {
+    .book-container {
+      flex-direction: column;
+    }
+
+    .book-image-section,
+    .book-details {
+      flex: 1 1 100%;
+    }
+
+    .btn-review {
+      margin-left: 0;
+      margin-top: 10px;
+    }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container book-container">
+  <div class="book-image-section">
+    <div class="book-image-wrapper">
+      {% if user.is_authenticated %}
+      <form action="{% url 'add_to_wishlist' book.id %}" method="post" class="wishlist-btn-form">
+        {% csrf_token %}
+        <button type="submit" class="wishlist-btn" title="Add to Wishlist">
+          {% if in_wishlist %}
+            <i class="fas fa-heart"></i>
+          {% else %}
+            <i class="far fa-heart"></i>
+          {% endif %}
+        </button>
+      </form>
+      {% endif %}
+
+      {% if book.cover_image %}
+      <img src="{{ book.cover_image }}" alt="{{ book.title }}" class="book-image">
+      {% else %}
+      <div class="bg-light text-center py-5 rounded">No Image Available</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="book-details">
+    <h2>{{ book.title }}</h2>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Price:</strong> ₹{{ book.price }}</p>
+    <p><strong>Description:</strong></p>
+    <p class="description-text">{{ book.description }}</p>
+
+    <div class="d-flex flex-wrap align-items-center">
+      <a href="{% url 'add_to_cart' book.id %}" class="btn btn-cart">🛒 Add to Cart</a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'add_review' book.id %}" class="btn btn-review">✍️ Write a Review</a>
+      {% else %}
+        <p class="mt-3"><a href="{% url 'login' %}">Login</a> to write a review.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="container reviews">
+  <h1 class="mt-4 mb-3">📋 Reviews</h1>
+  {% if reviews %}
+    {% for review in reviews %}
+    <div class="review-box">
+      <strong>{{ review.user.name }}</strong> –
+      <span class="stars">
+        {% for i in "12345"|make_list %}
+          {% if forloop.counter <= review.rating %}
+            <span class="star filled">&#9733;</span>
+          {% else %}
+            <span class="star">&#9734;</span>
+          {% endif %}
+        {% endfor %}
+      </span>
+      <br>
+      <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
+      <p class="mt-2">{{ review.comment }}</p>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted" style="font-size: 15px;">No reviews yet. Be the first to review this book!</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<style>
+    .wishlist-container {
+        padding: 40px 100px;
+        background-color: #f9f9f9;
+    }
+
+    .wishlist-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        text-align: center;
+        color: #3a154a;
+        position: relative;
+        margin-bottom: 50px;
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist-title::after {
+        content: '';
+        width: 350px;
+        height: 4px;
+        background: linear-gradient(to right, #531d69, #e5be7e);
+        display: block;
+        margin: 12px auto 0 auto;
+        border-radius: 2px;
+    }
+
+    .wishlist-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 25px;
+        background: #fff;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        flex-wrap: wrap;
+    }
+
+    .wishlist-product {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex: 1 1 300px;
+    }
+
+    .wishlist-product img {
+        width: 130px;
+        height: 150px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .wishlist-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wishlist-title-name {
+        font-size: 2.1rem;
+        font-weight: 600;
+        color: #080708;
+    }
+
+
+    .wishlist-title-author {
+        font-size: 1.5rem;
+        color: #080708;
+    }
+
+
+
+    .wishlist-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        min-width: 180px;
+    }
+
+    .wishlist-price {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+
+    .wishlist-remove {
+        color: #df1f18;
+        font-size: 2.1rem;
+        margin: 15px;
+        cursor: pointer;
+    }
+
+    .wishlist-button {
+        font-size: 1.8rem;
+        padding: 6px 18px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    .empty-wishlist {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .empty-wishlist h1 {
+        color: #777;
+    }
+
+    @media (max-width: 768px) {
+        .wishlist-info {
+            align-items: flex-start;
+            margin-top: 10px;
+        }
+
+        .wishlist-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="container wishlist-container">
+    <h2 class="wishlist-title"> My Wishlist</h2>
+
+    {% if wishlist_items %}
+    {% for item in wishlist_items %}
+    <div class="wishlist-item">
+        <!-- Remove Icon -->
+        <div>
+            <a href="{% url 'remove_from_wishlist' item.book.id %}" class="wishlist-remove" title="Remove">
+                <i class="fas fa-times-circle"></i>
+            </a>
+        </div>
+
+        <!-- Product Details -->
+        <div class="wishlist-product">
+            {% if item.book.cover_image %}
+            <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+            {% else %}
+            <img src="{% static 'images/placeholder.png' %}" alt="No Image">
+            {% endif %}
+
+            <div class="wishlist-details">
+                <span class="wishlist-title-name">{{ item.book.title }}</span>
+                <span class="wishlist-title-author">-{{ item.book.author }}</span>
+
+            </div>
+        </div>
+
+        <!-- Price, Date, Button -->
+        <div class="wishlist-info">
+            <div class="wishlist-price">₹{{ item.book.price }}</div>
+
+            <a href="{% url 'book_detail' item.book.id %}" class="btn btn-success wishlist-button">See More</a>
+
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-wishlist">
+        <img src="{% static 'image/empty_wishlist.jpg' %}" alt="Empty Wishlist" width="300">
+        <h1>Your wishlist is currently empty.</h1>
+        <a href="{% url 'book_list' %}" class="btn btn-primary mt-4">📚 Browse Books</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

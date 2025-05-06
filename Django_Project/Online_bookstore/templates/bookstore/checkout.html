@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block head %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(-10px);}
+        to {opacity: 1; transform: translateY(0);}
+    }
+
+    .form-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-weight: bold;
+        color: rgb(4, 142, 82);
+    }
+
+    .form-container h4 {
+        margin-top: 30px;
+        font-size: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 5px;
+    }
+
+    .form-container p, .form-container li {
+        font-size: 16px;
+        margin: 8px 0;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        margin: 12px 0;
+    }
+
+    .cart-item img {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        margin-right: 15px;
+        border-radius: 5px;
+    }
+
+    .btn-submit, .btn-back {
+        display: inline-block;
+        padding: 12px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-submit:hover {
+        background-color: #218838;
+    }
+
+    .btn-back {
+        background-color: #6c757d;
+        color: white;
+        margin-right: 15px;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background-color: #5a6268;
+    }
+
+    .icon-label {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .icon-label i {
+        margin-right: 8px;
+        color: #54ae68;
+    }
+
+    .confirmation-msg {
+        color: green;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+    }
+    .payment-options {
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+    }
+
+    .payment-options label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    .payment-options input[type="radio"] {
+        margin-right: 10px;
+    }
+
+    .form-error {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Order Summary</h1>
+
+    <h4>Shipping Details</h4>
+    <p class="icon-label"><i class="fas fa-user"></i><strong>Name:</strong> {{ shipping_data.name }}</p>
+    <p class="icon-label"><i class="fas fa-envelope"></i><strong>Address:</strong> {{ shipping_data.address }}, {{ shipping_data.locality }}, {{ shipping_data.city }}, {{ shipping_data.state }} - {{ shipping_data.pincode }}</p>
+    <p class="icon-label"><i class="fas fa-phone"></i><strong>Email:</strong> {{ shipping_data.email }}</p>
+    <p class="icon-label"><i class="fas fa-map-marker-alt"></i><strong>Phone:</strong> {{ shipping_data.phone }}</p>
+
+    <h4>Cart Items</h4>
+    <ul class="list-unstyled">
+        {% for item in cart_items %}
+        <li class="cart-item">
+            {% if item.book.cover_image %}
+                <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }} cover">
+            {% endif %}
+            <div>
+                <strong>{{ item.book.title }}</strong> (x{{ item.quantity }})<br>
+                ₹{{ item.subtotal }}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <p><strong>Total:</strong> ₹{{ total_price }}</p>
+
+    <form action="{% url 'place_order' %}" method="post">
+        {% csrf_token %}
+
+        <!-- Payment Options -->
+        <div class="payment-options">
+            <h4>Select Payment Method</h4>
+            <label>
+                <input type="radio" name="payment_method" value="card" required>
+                Credit/Debit Card
+            </label>
+            <label>
+                <input type="radio" name="payment_method" value="upi">
+                UPI
+            </label>
+            <label>
+                <input type="radio" name="payment_method" value="cod">
+                Cash on Delivery (COD)
+            </label>
+        </div>
+
+        <a href="{% url 'view_cart' %}" class="btn-back">← Back to Cart</a>
+        <button type="submit" class="btn-submit">Place Order</button>
+    </form>
+
+    {% if messages %}
+    <div class="confirmation-msg">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+</div>
+{% endblock %}

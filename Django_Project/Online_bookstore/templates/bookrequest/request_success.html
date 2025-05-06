@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+
+<style>
+    .success-container {
+        max-width: 700px;
+        margin: 100px auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: slideFadeIn 0.6s ease-in-out;
+    }
+
+    .success-image {
+        width: 200px;
+        height: auto;
+        margin-bottom: 20px;
+    }
+
+    .success-container h2 {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .success-container p {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .success-btn {
+        background-color: #fc7462;
+        color: #fff;
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .success-btn:hover {
+        background-color: #e05847;
+    }
+
+    @keyframes slideFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="success-container">
+    <img src="{% static 'image/success_book.png' %}" alt="Success" class="success-image">
+    
+    <h2>Thank you for your request!</h2>
+    <p>Your book request has been submitted successfully and is currently under review by our team.</p>
+    <a href="{% url 'view_book_requests' %}" class="success-btn">View My Requests</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile | Book Point{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: #f2f6fc;
+    }
+
+    .edit-profile-wrapper {
+        padding: 3rem 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .edit-profile-card {
+        background-color: white;
+        border-radius: 1.2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem 3rem;
+        width: 100%;
+        max-width: 700px;
+    }
+
+    .edit-profile-card h2 {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 0.9rem;
+        display: block;
+        font-size: 1.6rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1.5rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fdfdfd;
+    }
+
+    input[type="file"] {
+        padding: 0.5rem;
+    }
+
+    .btn-primary {
+        padding: 0.6rem 2rem;
+        border-radius: 30px;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .btn-secondary {
+        padding: 0.6rem 2rem;
+        border-radius: 30px;
+        font-size: 1.5rem;
+        margin-left: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{{ url_for('book_list') }}">home</a>
+    <a href="{{ url_for('aboutus') }}">About Us</a>
+    <a href="{{ url_for('contact_view') }}">Contact Us</a>
+
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container edit-profile-wrapper">
+    <div class="edit-profile-card">
+        <h2>Edit Your Profile</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{ user_form.csrf_token }}
+
+            <!-- AppUser fields -->
+            <div class="form-group">
+                {{ user_form.name.label }}
+                {{ user_form.name(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ user_form.email.label }}
+                {{ user_form.email(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ user_form.phone.label }}
+                {{ user_form.phone(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ user_form.address.label }}
+                {{ user_form.address(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ user_form.gender.label }}
+                {{ user_form.gender(class_="form-control") }}
+            </div>
+
+            <!-- UserProfile fields -->
+            <div class="form-group">
+                {{ profile_form.profile_picture.label }}
+                {{ profile_form.profile_picture(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ profile_form.bio.label }}
+                {{ profile_form.bio(class_="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ profile_form.birth_date.label }}
+                {{ profile_form.birth_date(class_="form-control") }}
+            </div>
+
+            <div class="d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('view_profile') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

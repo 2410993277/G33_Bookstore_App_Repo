@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}My Shopping Cart{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .cart-heading {
+        text-align: center;
+        margin: 40px;
+    }
+
+    .cart-container {
+        font-size: large;
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 70px 2fr 1fr 1fr 50px;
+        gap: 15px;
+        align-items: center;
+        padding: 15px 10px;
+        border-bottom: 1px solid #ddd;
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+        background-color: #f1f1f1;
+    }
+
+    .book-cover {
+        width: 60px;
+        height: auto;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .book-details {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .quantity-controls .btn {
+        min-width: 30px;
+        text-align: center;
+        padding: 2px 8px;
+    }
+
+    .price {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .delete-btn {
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        text-align: center;
+    }
+
+    .delete-btn:hover {
+        color: darkred;
+    }
+
+    .cart-summary {
+        text-align: right;
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .checkout-btn {
+        background-color: rgb(247, 221, 88);
+        color: black;
+        border: none;
+        text-align: center;
+        padding: 12px 15px;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+        background-color: #54ae68;
+        color: white;
+    }
+
+    .cart-image {
+    width: 100%;
+    height: 450px;  /* Adjust height as needed */
+    object-fit: cover;
+    border-radius: 12px;
+    }
+
+
+
+    @media (max-width: 768px) {
+        .cart-item {
+            grid-template-columns: 50px 1.5fr 1fr 1fr 40px;
+            font-size: 14px;
+        }
+
+        .book-details {
+            font-size: 14px;
+        }
+
+        .cart-summary {
+            font-size: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="cart-container p-4 shadow rounded bg-white">
+
+        <img src="https://sellfy.com/blog/wp-content/uploads/2020/03/add-a-shopping-cart-website.png" alt="Cart Image"
+            class="cart-image img-fluid mx-auto d-block">
+        <h1 class="cart-heading text-center mb-4">My Shopping Cart 🛒</h1>
+
+        {% if cart_items %}
+        <ul class="list-unstyled">
+            {% for item in cart_items %}
+            <li class="cart-item">
+                <img src="{{ item.book.cover_image.url }}" class="book-cover" alt="{{ item.book.title }}">
+                <div class="book-details">
+                    <h5>{{ item.book.title }}</h5>
+                    <span class="text-muted">₹{{ item.book.price }}</span>
+                </div>
+                <div class="quantity-controls d-flex align-items-center">
+                    <a href="{% url 'decrease_quantity' item.book.id %}" class="btn btn-outline-secondary">−</a>
+                    <span class="px-2">{{ item.quantity }}</span>
+                    <a href="{% url 'increase_quantity' item.book.id %}" class="btn btn-outline-secondary">+</a>
+                </div>
+                <div class="subtotal">₹{{ item.subtotal }}</div>
+                <a href="{% url 'remove_from_cart' item.book.id %}" class="delete-btn"><i class="fas fa-trash-alt"></i></a>
+            </li>
+            {% endfor %}
+        </ul>
+        
+
+        <div class="cart-summary">
+            Total: ₹<span id="total-price">{{ total }}</span>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+            <a href="{% url 'clear_cart' %}" class="btn clear-btn"> Clear Cart</a>
+            <a href="{% url 'proceed_to_checkout' %}" class="btn checkout-btn"> Proceed to Checkout</a>
+        </div>
+
+        {% else %}
+        <div class="text-center empty-cart mt-5">
+            <i class="fas fa-shopping-cart fa-2x mb-4"></i>
+            <h4 class="text-muted">Your cart is empty.</h4>
+            <a href="{% url 'book_list' %}" class="btn btn-primary mt-4">📚 Browse Books</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

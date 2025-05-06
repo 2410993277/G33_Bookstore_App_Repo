@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<style>
+    .book-request-wrapper {
+        max-width: 650px;
+        margin: 80px auto;
+        background: #fdfdfd;
+        padding: 40px 50px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.7s ease-out;
+    }
+
+    .book-request-wrapper h2 {
+        text-align: center;
+        font-size: 3rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .book-request-wrapper label {
+        font-weight: 500;
+        font-size: 1.7rem;
+        color: #444;
+        margin-bottom: 5px;
+    }
+
+    .book-request-wrapper input[type="text"],
+    .book-request-wrapper select,
+    .book-request-wrapper textarea {
+        width: 100%;
+        font-size: 1.5rem;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        background: #fafafa;
+        transition: 0.3s ease;
+    }
+
+    .book-request-wrapper input:focus,
+    .book-request-wrapper textarea:focus,
+    .book-request-wrapper select:focus {
+        border-color: #ee8f83;
+        background: #fff;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(255, 82, 59, 0.2);
+    }
+
+    .submit-btn {
+        background: #fa686d;
+        color: white;
+        padding: 12px;
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.8rem;
+        font-weight: 500;
+        transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background: #e14b33;
+        cursor: pointer;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .book-request-wrapper {
+            padding: 25px;
+        }
+
+        .book-request-wrapper h2 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div class="book-request-wrapper">
+    <h2>📖 Request a Book</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="text-danger small mb-3">{{ field.errors|striptags }}</div>
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="submit-btn">Submit Request</button>
+    </form>
+</div>
+{% endblock %}

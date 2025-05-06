@@ -1,0 +1,71 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}User Wishlist{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">
+        Wishlist for {{ user.name }}
+        <a href="{{ url_for('admin_wishlists') }}" class="btn btn-secondary btn-sm float-right">
+            <i class="fas fa-arrow-left"></i> Back to Wishlists
+        </a>
+    </h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Wishlist Items</h6>
+            <form action="{{ url_for('admin_clear_user_wishlist', user_id=user.id) }}" method="POST">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to clear this entire wishlist?');">
+                    <i class="fas fa-trash"></i> Clear All Items
+                </button>
+            </form>
+        </div>
+        <div class="card-body">
+            {% if wishlist_items %}
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Book ID</th>
+                                <th>Cover</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Price</th>
+                                <th>Added Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in wishlist_items %}
+                            <tr>
+                                <td>{{ item.book.id }}</td>
+                                <td>
+                                    {% if item.book.cover_image %}
+                                    <img src="{{ url_for('static', filename=item.book.cover_image) }}" height="50" alt="Book Cover">
+                                    {% else %}
+                                    <img src="{{ url_for('static', filename='uploads/covers/default.jpg') }}" height="50" alt="Default Cover">
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.book.title }}</td>
+                                <td>{{ item.book.author }}</td>
+                                <td>₹{{ item.book.price }}</td>
+                                <td>{{ item.added_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <form action="{{ url_for('admin_delete_wishlist_item', wishlist_id=item.id) }}" method="POST">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this item?');">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-center">This user has no items in their wishlist.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

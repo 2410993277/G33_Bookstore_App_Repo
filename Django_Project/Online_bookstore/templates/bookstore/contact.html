@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - Book Store{% endblock %}
+
+{% block head %}
+
+
+
+<style>
+    .contact-form {
+        display: flex;
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        max-width: 1200px;
+        width: 100%;
+        margin: 60px auto;
+        gap: 20px;
+    }
+
+    .contact-form img {
+        width: 40%;
+        border-radius: 12px;
+    }
+
+    .form-content {
+        width: 60%;
+    }
+
+    .form-content h2 {
+        text-align: center;
+        color: var(--black);
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        background: #f9f9f9;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #27acae;
+        background: #fff;
+    }
+
+    .contact-form button {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.8rem;
+        color: #fff;
+        background: #27acae;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .contact-form button:hover {
+        background: #1d8c8f;
+    }
+</style>
+
+
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <div class="contact-form">
+        <img src="https://i.pinimg.com/originals/0f/87/4d/0f874de41f1d120163cb925e2dbd0fdd.gif" alt="Contact Us">
+        <div class="form-content">
+            <h2>Contact Us</h2>
+
+            {% if success %}
+                <h3 style="color: green; text-align: center;">Thank you for your message!</h3>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.message.label_tag }}
+                    {{ form.message }}
+                    {{ form.message.errors }}
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

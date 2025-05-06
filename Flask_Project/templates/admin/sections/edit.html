@@ -1,0 +1,92 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Edit Section{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Edit Section</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin_sections') }}">Sections</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-edit me-1"></i>
+            Edit Section: {{ section.name }}
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Section Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ section.name }}" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4">{{ section.description }}</textarea>
+                            <div class="form-text">Brief description of this section</div>
+                        </div>
+
+                        {% if section.books|length > 0 %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> This section contains {{ section.books|length }} book(s).
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="banner" class="form-label">Banner Image</label>
+                            <input type="file" class="form-control" id="banner" name="banner" accept="image/*">
+                            <div class="form-text">Leave empty to keep the current banner. Recommended size: 1200 x 300px</div>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <div class="banner-preview">
+                                {% if section.banner %}
+                                    <img id="banner-preview" src="{{ url_for('static', filename=section.banner) }}" alt="{{ section.name }}" style="max-width: 100%;">
+                                {% else %}
+                                    <img id="banner-preview" src="#" alt="Banner Preview" style="max-width: 100%; display: none;">
+                                    <p class="text-muted">No banner currently set</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('admin_sections') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Sections
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Section
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Banner image preview
+    document.getElementById('banner').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = document.getElementById('banner-preview');
+                img.src = event.target.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

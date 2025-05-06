@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmation{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .thank-you-container {
+        max-width: 600px;
+        margin: 80px auto;
+        padding: 50px 40px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .checkmark-circle {
+        display: inline-block;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #2ecc71;
+        margin-bottom: 25px;
+        position: relative;
+        box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+    }
+
+    .checkmark-circle::before {
+        content: "✔";
+        position: absolute;
+        color: white;
+        font-size: 42px;
+        font-weight: bold;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .thank-you-container h2 {
+        color: #2c3e50;
+        font-size: 3.2rem;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .thank-you-container p {
+        font-size: 1.6rem;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .details-box {
+        background-color: #f4f6f7;
+        padding: 18px;
+        border-radius: 10px;
+        margin-top: 20px;
+        font-size: 2.7rem;
+        color: #333;
+    }
+
+    
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="thank-you-container">
+    <div class="checkmark-circle"></div>
+    <h2>Thank You, {{ name }}!</h2>
+    <p>Your order has been placed successfully. We've sent a confirmation to your email.</p>
+
+    <div class="details-box">
+        <p><strong>Order ID:</strong> #{{ order_id }}</p>
+        <p><strong>Total Amount:</strong> ₹{{ total_price }}</p>
+    </div>
+
+    <a href="{% url 'track_order' %}" class="btn track-btn">📦 Track Your Order</a>
+</div>
+{% endblock %}

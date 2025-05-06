@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Track Your Orders{% endblock %}
+
+{% block head %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .order-card {
+        background: #ffffff;
+        border-left: 6px solid #3498db;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+    }
+
+    .order-card:hover {
+        transform: scale(1.01);
+    }
+
+    .order-card p {
+        margin: 8px 0;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .order-card strong {
+        color: #2c3e50;
+    }
+
+    .order-status {
+        font-weight: bold;
+        color: #27ae60;
+    }
+
+    .payment-status {
+        font-weight: bold;
+        color: #e67e22;
+    }
+
+    .no-orders {
+        text-align: center;
+        color: #888;
+        font-size: 18px;
+        margin-top: 50px;
+    }
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>📦 Your Orders</h1>
+
+    {% for order in orders %}
+    <div class="order-card">
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Date:</strong> {{ order.ordered_date|date:"F j, Y, g:i a" }}</p>
+        <p><strong>Status:</strong> <span class="order-status">{{ order.order_status }}</span></p>
+        <p><strong>Payment:</strong> {{ order.payment_method|title }} — <span class="payment-status">{{ order.payment_status }}</span></p>
+    </div>
+    {% empty %}
+    <p class="no-orders">🛒 You haven't placed any orders yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

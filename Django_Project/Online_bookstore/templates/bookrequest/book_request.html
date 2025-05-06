@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<style>
+    .dashboard-container {
+        max-width: 1000px;
+        margin: 60px auto;
+        padding: 30px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 35px;
+        color: #333;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    thead tr {
+        background-color: #f5f5f5;
+        border-bottom: 2px solid #ddd;
+    }
+
+    th, td {
+        padding: 14px 18px;
+        text-align: left;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #eee;
+        font-size: 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+
+    tbody tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    th {
+        font-weight: 600;
+        font-size: 1.8rem;
+        color: #444;
+    }
+
+    .status {
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 6px;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .pending {
+        color: #c87f00;
+        background-color: #fff4e5;
+    }
+
+    .approved {
+        color: #2d8a4c;
+        background-color: #e8f9f0;
+    }
+
+    .declined {
+        color: #c0392b;
+        background-color: #fdecea;
+    }
+
+    .no-data {
+        text-align: center;
+        font-size: 20px;
+        color: #777;
+        margin-top: 20px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        thead {
+            display: none;
+        }
+
+        tr {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px 15px;
+            text-align: right;
+            position: relative;
+        }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 15px;
+            width: 50%;
+            font-weight: bold;
+            color: #555;
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="dashboard-container">
+    <h2>📚 My Book Requests</h2>
+
+    {% if requests %}
+    <table>
+        <thead>
+            <tr>
+                <th>Book Name</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Requested On</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+            <tr>
+                <td data-label="Book Name">{{ request.name }}</td>
+                <td data-label="Author">{{ request.author }}</td>
+                <td data-label="Category">{{ request.category }}</td>
+                <td data-label="Status">
+                    {% if request.status == "Pending" %}
+                        <span class="status pending">Pending</span>
+                    {% elif request.status == "Approved" %}
+                        <span class="status approved">Approved</span>
+                    {% else %}
+                        <span class="status declined">Declined</span>
+                    {% endif %}
+                </td>
+                <td data-label="Requested On">{{ request.requested_on|date:"F d, Y, h:i A" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-data">You have not requested any books yet!</p>
+    {% endif %}
+</div>
+{% endblock %}

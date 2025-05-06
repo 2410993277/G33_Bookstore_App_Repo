@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bookstore{% endblock %}</title>
+
+    <!-- External CSS Libraries -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+
+
+    <header class="header">
+        <div class="header-1">
+            <a href="{% url 'book_list' %}" class="logo"> <i class="fas fa-book"></i> Book Point </a>
+
+            <form action="{% url 'search_results' %}" method="get" class="search-form">
+                <input type="text" name="q" placeholder="Search for a book..." required>
+                <button type="submit" id="search-btn"><i class="fas fa-search"></i></button>
+            </form>
+
+
+
+
+            <div class="icons">
+                <div class="cart-icon-wrapper">
+                    <a href="{% url 'view_cart' %}" class="fas fa-shopping-cart"></a>
+                    <a href="{% url 'view_wishlist' %}" class="fas fa-heart"></a>
+                    
+                </div>
+            </div>
+
+            <div class="profile-wrapper">
+                <div class="profile-toggle" id="profileToggle">
+
+                    {% if request.user.is_authenticated and request.user.userprofile.profile_picture %}
+                    <img src="{{ request.user.userprofile.profile_picture.url }}" alt="Profile" class="profile-img">
+                    {% else %}
+                    <img src="{% static 'image/default_profile.png' %}" alt="Profile" class="profile-img">
+                    {% endif %}
+
+                    {% if request.user.is_authenticated %}
+                    {{ request.user.name }}<i class="fas fa-chevron-down"></i>
+                    {% else %}
+                    Login
+                    {% endif %}
+
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <ul>
+                        {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'view_profile' %}">View Profile</a></li>
+                        <li><a href="{% url 'view_cart' %}">My Cart</a></li>
+                        <li><a href="{% url 'view_wishlist' %}">My Wishlist</a></li>
+                        <li><a href="{% url 'track_order' %}">My Orders</a></li>
+                        <li><a href="{% url 'view_book_requests' %}"> My Book Requests</a></li>
+                        <li><a href="{% url 'logout' %}" class="logout">Logout</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Sign Up</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="header-2">
+            {% block navbar %}
+            <nav class="navbar">
+                <div class="menu-icon" id="menu-toggle">
+                    <i class="fas fa-bars menu-icon menu-toggle"></i>
+                </div>
+                <a href="{% url 'book_list' %}">Home</a>
+                <a href="#featured">Bestsellers</a>
+                <a href="#reviews">Reviews</a>
+                <a href="{% url 'aboutus' %}">About Us</a>
+                <a href="{% url 'contact' %}">Contact Us</a>
+                
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'request_book' %}">Request a Book</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                {% endif %}
+            </nav>
+            {% endblock %}
+        </div>
+    </header>
+
+    <nav class="bottom-navbar">
+        <a href="{% url 'book_list' %}" class="fas fa-home"></a>
+        <a href="#featured" class="fas fa-list"></a>
+        <a href="#arrivals" class="fas fa-tags"></a>
+        <a href="#reviews" class="fas fa-comments"></a>
+        <a href="#blogs" class="fas fa-blog"></a>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="close-btn" id="close-sidebar">&times;</div>
+        <h1>Sections</h1>
+        <ul class="category">
+            {% for section in sections %}
+            <li>
+                <a href="{% url 'section_detail' section.id %}">
+                    <i class="fas fa-book"></i> {{ section.name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <div class="box-container">
+            <div class="box">
+                <h3>Our Locations</h3>
+                <a href="#"><i class="fas fa-map-marker-alt"></i> India</a>
+                <a href="#"><i class="fas fa-map-marker-alt"></i> USA</a>
+                <a href="#"><i class="fas fa-map-marker-alt"></i> Russia</a>
+                <a href="#"><i class="fas fa-map-marker-alt"></i> France</a>
+                <a href="#"><i class="fas fa-map-marker-alt"></i> Japan</a>
+            </div>
+            <div class="box">
+                <h3>Quick Links</h3>
+                <a href="#"><i class="fas fa-arrow-right"></i> Home</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Featured</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Arrivals</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Reviews</a>
+            </div>
+            <div class="box">
+                <h3>Extra Links</h3>
+                <a href="#"><i class="fas fa-arrow-right"></i> Account Info</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Ordered Items</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Privacy Policy</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Payment Method</a>
+                <a href="#"><i class="fas fa-arrow-right"></i> Our Services</a>
+            </div>
+            <div class="box">
+                <h3>Contact Info</h3>
+                <a href="#"><i class="fas fa-phone"></i> +91 8853455765</a>
+                <a href="#"><i class="fas fa-phone"></i> +91 9140026484</a>
+                <a href="#"><i class="fas fa-envelope"></i> onlinebookstore@gmail.com</a>
+                <img src="{% static 'image/worldmap.png' %}" class="map" alt="">
+            </div>
+        </div>
+        <div class="share">
+            <a href="#" class="fab fa-facebook-f"></a>
+            <a href="#" class="fab fa-twitter"></a>
+            <a href="#" class="fab fa-instagram"></a>
+            <a href="#" class="fab fa-linkedin"></a>
+            <a href="#" class="fab fa-pinterest"></a>
+        </div>
+        <div class="credit"><span>&copy; 2025 Bookstore</span> | All rights reserved!</div>
+    </footer>
+
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileToggle = document.getElementById('profileToggle');
+            const profileDropdown = document.getElementById('profileDropdown');
+    
+            profileToggle.addEventListener('click', function (e) {
+                e.stopPropagation(); // Prevent closing immediately
+                profileDropdown.classList.toggle('show-dropdown');
+            });
+    
+            // Close dropdown when clicking outside
+            window.addEventListener('click', function () {
+                profileDropdown.classList.remove('show-dropdown');
+            });
+    
+            // Prevent click inside dropdown from closing it
+            profileDropdown.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+    
+    
+
+    {% block scripts %}
+    {% endblock %}
+</body>
+
+</html>

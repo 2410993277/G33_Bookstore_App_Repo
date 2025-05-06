@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+  }
+
+  .review-form-container {
+    max-width: 700px;
+    margin: 60px auto;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .review-form-container h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #1e293b;
+  }
+
+  form p {
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 1.7rem;
+  }
+
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background-color: #f9fafb;
+    font-size: 1.4rem;
+    transition: border-color 0.2s ease-in-out;
+  }
+
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #3b82f6;
+    outline: none;
+  }
+
+  .btn-primary {
+    display: block;
+    margin: 25px auto 0 auto;
+    padding: 12px 30px;
+    font-size: 1.7rem;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: #5abb97;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #edde6b;
+  }
+</style>
+{% endblock %}
+
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{% url 'book_list' %}">home</a>
+    <a href="{% url 'aboutus' %}">About Us</a>
+    <a href="{% url 'contact' %}">Contact Us</a>
+    <a href="{% url 'request_book' %}">Request a Book</a>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    {% endif %}
+</nav>
+{% endblock %}
+
+{% block content %}
+  <div class="review-form-container">
+    <h2>Write a Review for: "{{ book.title }}"</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  </div>
+{% endblock %}

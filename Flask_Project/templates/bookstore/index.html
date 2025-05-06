@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Bookstore{% endblock %}
+
+{% block content %}
+
+<section class="home" id="home">
+  <div class="row">
+    <div class="content">
+      <h3>Up to 25% off</h3>
+      <p>Get 25% discount and free delivery when you buy any book from our website!</p>
+    </div>
+    <div class="swiper books-slider">
+      <div class="swiper-wrapper">
+        {% for book in books %}
+        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="swiper-slide">
+          {% if book.cover_image %}
+          <img src="{{ url_for('static', filename=book.cover_image) }}" alt="{{ book.title }}">
+          {% else %}
+          <img src="{{ url_for('static', filename='image/default-book.png') }}" alt="No Image">
+          {% endif %}
+        </a>
+        {% endfor %}
+      </div>
+      <img src="{{ url_for('static', filename='image/stand.png') }}" class="stand" alt="">
+    </div>
+  </div>
+</section>
+
+<section class="icons-container">
+  <div class="icons">
+    <i class="fas fa-shipping-fast"></i>
+    <div class="content">
+      <h3>free shipping</h3>
+      <p>order over $100</p>
+    </div>
+  </div>
+  <div class="icons">
+    <i class="fas fa-lock"></i>
+    <div class="content">
+      <h3>secure payment</h3>
+      <p>100 secure payment</p>
+    </div>
+  </div>
+  <div class="icons">
+    <i class="fas fa-redo-alt"></i>
+    <div class="content">
+      <h3>easy returns</h3>
+      <p>10 days returns</p>
+    </div>
+  </div>
+  <div class="icons">
+    <i class="fas fa-headset"></i>
+    <div class="content">
+      <h3>24/7 support</h3>
+      <p>call us anytime</p>
+    </div>
+  </div>
+</section>
+
+<section class="featured" id="featured">
+  <h1 class="heading"><span>Bestsellers</span></h1>
+  <div class="swiper featured-slider">
+    <div class="swiper-wrapper">
+      {% for book in books[:8] %}
+      <div class="swiper-slide box">
+        <div class="image">
+          {% if book.cover_image %}
+          <img src="{{ url_for('static', filename=book.cover_image) }}" alt="{{ book.title }}">
+          {% else %}
+          <img src="{{ url_for('static', filename='image/default-book.png') }}" alt="No cover">
+          {% endif %}
+        </div>
+        <div class="content">
+          <h3>{{ book.title }}</h3>
+          <p class="price">by {{ book.author }}</p>
+          <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-primary">QUICK ADD</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</section>
+
+<section class="deal">
+  <div class="content">
+    <h3>Deal of the Day</h3>
+    <h1>Up to 50% Off</h1>
+    <p>Get 50% off on books during weekends and enjoy free delivery!</p>
+  </div>
+  <div class="image">
+    <img src="{{ url_for('static', filename='image/deal-img.jpg') }}" alt="Deal of the Day">
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <h1 class="heading"><span>Client's Reviews</span></h1>
+  <div class="swiper reviews-slider">
+    <div class="swiper-wrapper">
+      {% for review in reviews %}
+      <div class="swiper-slide box">
+        <img src="{{ url_for('static', filename=review.image) }}" alt="{{ review.name }}">
+        <h3>– {{ review.name }}</h3>
+        <p>{{ review.review }}</p>
+        <div class="stars">
+          {% for i in range(1, 6) %}
+          <i class="fas {% if i <= review.rating %}fa-star{% else %}fa-star-half-alt{% endif %}"></i>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="add-review-button" style="text-align:center; margin-top: 20px;">
+    <a href="{{ url_for('client_review') }}" class="btn">Add Your Review</a>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const swiper = new Swiper(".featured-slider", {
+    loop: true,
+    spaceBetween: 20,
+    grabCursor: true,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      0: { slidesPerView: 1 },
+      768: { slidesPerView: 2 },
+      1024: { slidesPerView: 3 },
+    },
+  });
+</script>
+{% endblock %}

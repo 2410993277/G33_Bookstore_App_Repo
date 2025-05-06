@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        background-color: #f4f6f8;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    pre {
+        background-color: #1e1e1e;
+        color: #dcdcdc;
+        padding: 20px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 24px;
+        background-color: #0077ff;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: background 0.3s;
+        text-align: center;
+    }
+
+    .btn:hover {
+        background-color: #005fd4;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        pre {
+            font-size: 14px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<h2>All Sections</h2>
+<ul>
+  {% for section in data.sections %}
+    <li>{{ section.name }} - {{ section.description }}</li>
+  {% endfor %}
+</ul>
+
+<h2>All Books</h2>
+<ul>
+  {% for book in data.books %}
+    <li>
+      <strong>{{ book.title }}</strong> by {{ book.author }}<br>
+      Price: ₹{{ book.price }} | Section ID: {{ book.section_id }}
+    </li>
+  {% endfor %}
+</ul>
+
+    <a href="{% url 'dashboard' %}" class="btn">Back to Dashboard</a>
+</div>
+{% endblock %}
